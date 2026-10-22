@@ -105,5 +105,6 @@ export const api = {
 
   // Metrics & Demo Reset
   getMetrics: () => request("/metrics"),
+  runBenchmark: (runs: number = 200) => request(`/benchmark/run-suite?runs=${runs}`, { method: "POST" }),
   resetDemo: () => request("/demo/reset", { method: "POST" })
 };

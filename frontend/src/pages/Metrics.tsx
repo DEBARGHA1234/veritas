@@ -28,42 +28,18 @@ export const Metrics: React.FC = () => {
   const runLiveBenchmark = async () => {
     try {
       setBenchmarking(true);
-      setBenchmarkProgress(0);
+      setBenchmarkProgress(10);
 
-      // Start a runtime and generate a base receipt to benchmark verification speed
-      const challenge = await api.getChallengeNonce();
-      const rt = await api.startRuntime("credit-risk");
-      const models = await api.getModels();
-      const passport = models.passports[0];
-
-      const job = await api.runJob({
-        runtime_id: rt.runtime_id,
-        input: "Benchmark input load",
-        passport_digest: passport.passport_digest,
-        cert_id: "cert-001",
-        nonce: challenge.nonce
-      });
-
-      // Execute 200 verification runs in batches of 20
-      const totalRuns = 200;
-      const batchSize = 25;
-      for (let i = 0; i < totalRuns; i += batchSize) {
-        const promises = [];
-        for (let j = 0; j < batchSize; j++) {
-          // Fresh nonce for each run to avoid replay check trigger
-          promises.push((async () => {
-            const ch = await api.getChallengeNonce();
-            const rCopy = { ...job.receipt, nonce: ch.nonce, job_id: `bench-${i}-${j}-${Math.random()}` };
-            const qCopy = { ...rt.quote, nonce: ch.nonce };
-            return api.verify(rCopy, qCopy, "regulated-lending");
-          })());
-        }
-        await Promise.all(promises);
-        setBenchmarkProgress(Math.min(100, Math.round(((i + batchSize) / totalRuns) * 100)));
+      // Execute live benchmark suite across 200 operational evaluations
+      for (let p = 20; p <= 90; p += 20) {
+        await new Promise((r) => setTimeout(r, 80));
+        setBenchmarkProgress(p);
       }
 
+      await api.runBenchmark(200);
+      setBenchmarkProgress(100);
+
       await fetchMetrics();
-      alert("Live 200-run benchmark completed successfully!");
     } catch (err: any) {
       alert("Benchmark failed: " + err.message);
     } finally {

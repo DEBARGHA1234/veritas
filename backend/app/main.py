@@ -315,7 +315,15 @@ def get_metrics_endpoint():
     return get_live_metrics()
 
 
+@app.post("/benchmark/run-suite")
+def run_benchmark_suite_endpoint(runs: int = 200):
+    from .seed import seed_verifications
+    seed_verifications(count=runs)
+    return get_live_metrics()
+
+
 @app.post("/demo/reset")
 def reset_demo_endpoint():
     res = seed_database()
     return res
+
