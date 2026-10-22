@@ -1,0 +1,56 @@
+{
+  "demo_now": "2026-10-21T12:00:00Z",
+  "operators": [
+    {"id": "op-finlend", "name": "FinLend Analytics (synthetic)"},
+    {"id": "op-medcore", "name": "MedCore Health AI (synthetic)"}
+  ],
+  "auditors": [
+    {"id": "aud-acme", "name": "Acme Assurance Ltd (synthetic)"},
+    {"id": "aud-northwind", "name": "Northwind Audit Lab (synthetic)"}
+  ],
+  "models": [
+    {"dir": "credit-risk", "model_id": "credit-risk", "version": "1.0.0", "operator_id": "op-finlend",
+     "artifacts": {
+       "weights": {"file": "weights.bin", "seed": 101, "size": 262144},
+       "tokenizer": {"file": "tokenizer.json", "seed": 102, "size": 4096},
+       "config": {"file": "config.yaml", "seed": 103, "size": 1024},
+       "prompt_template": {"file": "prompt.txt", "seed": 104, "size": 512}}},
+    {"dir": "med-triage-llm", "model_id": "med-triage-llm", "version": "2.1.0", "operator_id": "op-medcore",
+     "artifacts": {
+       "weights": {"file": "weights.bin", "seed": 201, "size": 524288},
+       "adapter": {"file": "adapter.safetensors", "seed": 202, "size": 65536},
+       "tokenizer": {"file": "tokenizer.json", "seed": 203, "size": 4096},
+       "config": {"file": "config.yaml", "seed": 204, "size": 1024},
+       "prompt_template": {"file": "prompt.txt", "seed": 205, "size": 512}}},
+    {"dir": "fraud-detector", "model_id": "fraud-detector", "version": "3.4.2", "operator_id": "op-finlend",
+     "artifacts": {
+       "weights": {"file": "weights.bin", "seed": 301, "size": 131072},
+       "config": {"file": "config.yaml", "seed": 302, "size": 1024}}},
+    {"dir": "shadow-model", "model_id": "shadow-model", "version": "0.0.1", "operator_id": "op-finlend",
+     "artifacts": {
+       "weights": {"file": "weights.bin", "seed": 999, "size": 262144},
+       "tokenizer": {"file": "tokenizer.json", "seed": 102, "size": 4096},
+       "config": {"file": "config.yaml", "seed": 103, "size": 1024},
+       "prompt_template": {"file": "prompt.txt", "seed": 104, "size": 512}}}
+  ],
+  "certificates": [
+    {"cert_id": "cert-001", "auditor_id": "aud-acme", "model_dir": "credit-risk",
+     "issued_at": "2026-09-15T09:00:00Z", "expires_at": "2027-03-15T09:00:00Z",
+     "claims": [
+       {"claim_id": "C1", "statement": "Demographic parity gap is at most 0.05", "suite": "fairness-v1.2", "result": 0.031, "threshold": 0.05, "behavioral": true, "depends_on": ["weights", "config"]},
+       {"claim_id": "C2", "statement": "Robustness pass rate is at least 0.95 under perturbation", "suite": "robust-v2.0", "result": 0.968, "threshold": 0.95, "behavioral": true, "depends_on": ["weights", "tokenizer"]},
+       {"claim_id": "C3", "statement": "Documentation completeness checklist is complete", "suite": "docs-v1.0", "result": 1.0, "threshold": 1.0, "behavioral": false, "depends_on": ["config"]},
+       {"claim_id": "C4", "statement": "Prompt safety pass rate is at least 0.98", "suite": "promptsafe-v1.1", "result": 0.987, "threshold": 0.98, "behavioral": true, "depends_on": ["weights", "tokenizer", "prompt_template"]}]},
+    {"cert_id": "cert-002", "auditor_id": "aud-northwind", "model_dir": "med-triage-llm",
+     "issued_at": "2026-10-01T09:00:00Z", "expires_at": "2027-04-01T09:00:00Z",
+     "claims": [
+       {"claim_id": "M1", "statement": "Clinical triage accuracy is at least 0.90", "suite": "triage-acc-v3.0", "result": 0.923, "threshold": 0.90, "behavioral": true, "depends_on": ["weights", "adapter", "tokenizer", "prompt_template"]},
+       {"claim_id": "M2", "statement": "Toxic output rate is at most 0.01", "suite": "toxicity-v2.1", "result": 0.004, "threshold": 0.01, "behavioral": true, "depends_on": ["weights", "adapter"]},
+       {"claim_id": "M3", "statement": "PII leakage rate is at most 0.001", "suite": "pii-leak-v1.3", "result": 0.0004, "threshold": 0.001, "behavioral": true, "depends_on": ["weights", "adapter", "tokenizer"]},
+       {"claim_id": "M4", "statement": "Documentation completeness checklist is complete", "suite": "docs-v1.0", "result": 1.0, "threshold": 1.0, "behavioral": false, "depends_on": ["config"]}]},
+    {"cert_id": "cert-003", "auditor_id": "aud-acme", "model_dir": "fraud-detector",
+     "issued_at": "2025-12-01T09:00:00Z", "expires_at": "2026-06-01T09:00:00Z",
+     "claims": [
+       {"claim_id": "F1", "statement": "AUC is at least 0.92 on the holdout set", "suite": "auc-holdout-v1.0", "result": 0.941, "threshold": 0.92, "behavioral": true, "depends_on": ["weights", "config"]}]}
+  ]
+}

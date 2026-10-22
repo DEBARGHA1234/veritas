@@ -1,0 +1,16 @@
+{
+  "name": "veritas-zk",
+  "version": "1.0.0",
+  "description": "Zero-knowledge Poseidon Merkle membership circuit and scripts for VERITAS",
+  "main": "tree.js",
+  "type": "module",
+  "scripts": {
+    "tree": "node tree.js",
+    "prove": "node prove.js",
+    "verify": "node verify.js"
+  },
+  "dependencies": {
+    "circomlibjs": "^0.1.7",
+    "snarkjs": "^0.7.6"
+  }
+}
