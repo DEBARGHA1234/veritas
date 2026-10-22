@@ -9,6 +9,7 @@ import { Verify } from './pages/Verify';
 import { Attacks } from './pages/Attacks';
 import { Metrics } from './pages/Metrics';
 import { Business } from './pages/Business';
+import { PitchDeck } from './pages/PitchDeck';
 
 export const App: React.FC = () => {
   const [activeTab, setActiveTab] = useState('overview');
@@ -49,6 +50,7 @@ export const App: React.FC = () => {
         {activeTab === 'attacks' && <Attacks />}
         {activeTab === 'metrics' && <Metrics />}
         {activeTab === 'business' && <Business />}
+        {activeTab === 'pitch' && <PitchDeck />}
       </main>
 
       <footer className="border-t border-slate-200 bg-white py-4 text-center text-xs text-slate-500">
