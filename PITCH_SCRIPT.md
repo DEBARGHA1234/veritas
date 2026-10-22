@@ -110,13 +110,13 @@
   - Throughput: **5,000+ verifications per second per worker node**.  
   This easily fits inside the sub-50ms latency budget of payment gateways and algorithmic trading engines."*
 
-### Slide 13: Scalable Unit Economics & B2B SaaS Model
+### Slide 13: System Scalability & Production Deployment Architecture
 - **What to say:**  
-  *"Our business model leverages dual-stream B2B SaaS monetization:  
-  1. A predictable platform license: $400 per model per month for passport registry and compliance log indexing.  
-  2. A volume consumption fee: $25 per 1,000,000 verified receipts.  
-  Because verifying cryptographic hashes and signatures requires minimal CPU cycles, cloud infrastructure costs are approximately $4.00 per million receipts. That yields a **gross margin exceeding 98%**.  
-  A modest initial cohort of 10 enterprise clients running 5 models generates **$468,000 in ARR**."*
+  *"How does VERITAS scale to high-throughput financial pipelines without creating architectural bottlenecks?  
+  1. **Stateless Verification Pipeline**: Our verifier engines require zero database locks. Verification is a pure cryptographic function over Ed25519 signatures and Merkle inclusion paths. Nodes scale horizontally across Kubernetes clusters to 50,000+ verifications per second.  
+  2. **Log Tree Sharding**: Transparency logs are partitioned by quarterly time epochs. 100 Million execution receipts consume just 45 GB of commodity cloud object storage.  
+  3. **Hardware-Agnostic Attestation**: The system uses a portable TEE abstraction layer supporting Intel SGX/TDX, AMD SEV-SNP, and AWS Nitro enclaves.  
+  4. **Strict Zero-PII Compliance**: Receipts store only cryptographic hashes and challenge nonces. Zero customer names, financial statements, or raw prompt text ever leave the enclave—guaranteeing GDPR, CCPA, and DPDP compliance by design."*
 
 ### Slide 14: Future Strategic Roadmap
 - **What to say:**  

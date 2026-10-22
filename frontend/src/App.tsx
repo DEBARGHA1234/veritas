@@ -8,7 +8,6 @@ import { Runtime } from './pages/Runtime';
 import { Verify } from './pages/Verify';
 import { Attacks } from './pages/Attacks';
 import { Metrics } from './pages/Metrics';
-import { Business } from './pages/Business';
 import { PitchDeck } from './pages/PitchDeck';
 
 export const App: React.FC = () => {
@@ -49,7 +48,6 @@ export const App: React.FC = () => {
         )}
         {activeTab === 'attacks' && <Attacks />}
         {activeTab === 'metrics' && <Metrics />}
-        {activeTab === 'business' && <Business />}
         {activeTab === 'pitch' && <PitchDeck />}
       </main>
 

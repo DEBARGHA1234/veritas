@@ -34,7 +34,7 @@ interface ScenarioDetail {
   tampered_state: string;
   parameter_diff: string;
   detection_mechanism: string;
-  business_impact: string;
+  defense_and_mitigation: string;
   what_happened: string;
 }
 
@@ -52,7 +52,7 @@ const INITIAL_SCENARIOS: ScenarioDetail[] = [
     tampered_state: 'Identical: Model loaded inside TEE matches certified passport exactly.',
     parameter_diff: '0 bytes drifted. Measurement matches registered passport.',
     detection_mechanism: 'All 8 VERITAS pipeline checks evaluate PASS. Enclave signature and platform binding valid.',
-    business_impact: 'Instant automated loan decision approved under FCRA & Reg B compliance (<1.4ms latency).',
+    defense_and_mitigation: 'Instant automated loan decision approved under FCRA & Reg B compliance (<1.4ms latency).',
     what_happened: 'Model matches certified passport; valid enclave quote and claims.'
   },
   {
@@ -68,7 +68,7 @@ const INITIAL_SCENARIOS: ScenarioDetail[] = [
     tampered_state: 'Identical: Clinical model executed in isolated hardware enclave.',
     parameter_diff: '0 bytes drifted. All clinical safety claims verified active.',
     detection_mechanism: 'All 8 checks pass. Hardware quote verified against health department root keys.',
-    business_impact: 'Clinical triage score certified compliant with HIPAA & hospital clinical governance.',
+    defense_and_mitigation: 'Clinical triage score certified compliant with HIPAA & hospital clinical governance.',
     what_happened: 'Clinical model matches passport; valid quote and clinical safety claims.'
   },
   {
@@ -84,7 +84,7 @@ const INITIAL_SCENARIOS: ScenarioDetail[] = [
     tampered_state: 'Enclave Hardware Measurement: 9b1c72ea8401... (Un-audited rogue model weights)',
     parameter_diff: 'Measurement mismatch: Hardware enclave was booted on uncertified code/weights.',
     detection_mechanism: 'CHECK 4 (Measurement Match) fails immediately. The cryptographic hardware quote proves the executed code does not match the certified passport digest.',
-    business_impact: 'Fraudulent loan origination blocked instantly. Tampering logged to immutable transparency registry.',
+    defense_and_mitigation: 'Fraudulent loan origination blocked instantly. Tampering logged to immutable transparency registry.',
     what_happened: 'Operator claimed credit-risk but executed shadow-model. Check 4 measurement mismatch caught it.'
   },
   {
@@ -100,7 +100,7 @@ const INITIAL_SCENARIOS: ScenarioDetail[] = [
     tampered_state: 'config.json SHA256: ffff90... (Leverage cap modified to 5.0x post-audit)',
     parameter_diff: 'max_leverage: 3.0 -> 5.0. Dependency graph flags Claims C1 (Fair Lending) and C3 (Docs) as impacted.',
     detection_mechanism: 'CHECK 7 (Dependency Diff Engine) calculates exact dependency tree. It isolates affected claims and outputs a selective revalidation plan.',
-    business_impact: 'Selective re-audit requires re-running only 2 of 4 suites — SAVING 50% re-testing compute and auditor fees.',
+    defense_and_mitigation: 'Selective re-audit requires re-running only 2 of 4 suites — SAVING 50% re-testing compute and auditor fees.',
     what_happened: 'Config mutated. C1 & C3 impacted. Selective plan reruns 2 of 4 suites (50% saved).'
   },
   {
@@ -116,7 +116,7 @@ const INITIAL_SCENARIOS: ScenarioDetail[] = [
     tampered_state: 'tokenizer.json SHA256: ffff4e... (Updated vocabulary file)',
     parameter_diff: 'tokenizer.json mutated. Impacted claims: C2 (Adversarial Robustness) & C4 (Prompt Injection Safety).',
     detection_mechanism: 'CHECK 7 (Dependency Engine) detects tokenizer hash mutation. Generates targeted plan for suites 2 and 4.',
-    business_impact: '2 of 4 test suites re-evaluated (50% compute and time saved compared to full re-certification).',
+    defense_and_mitigation: '2 of 4 test suites re-evaluated (50% compute and time saved compared to full re-certification).',
     what_happened: 'Tokenizer mutated. C2 & C4 impacted. Selective plan reruns 2 of 4 suites (50% saved).'
   },
   {
@@ -132,7 +132,7 @@ const INITIAL_SCENARIOS: ScenarioDetail[] = [
     tampered_state: 'prompt_template.txt SHA256: ffffaa... (Modified system prompt formatting)',
     parameter_diff: 'prompt_template.txt mutated. Only Claim C4 (Prompt Safety) depends on this file.',
     detection_mechanism: 'CHECK 7 (Dependency Engine) isolates single claim impact. Formulates plan re-running only Suite 4.',
-    business_impact: 'Only 1 of 4 test suites rerun — SAVING 75% audit turnaround time and computational cost.',
+    defense_and_mitigation: 'Only 1 of 4 test suites rerun — SAVING 75% audit turnaround time and computational cost.',
     what_happened: 'Prompt template mutated. Only C4 impacted. 1 of 4 suites rerun (75% saved).'
   },
   {
@@ -148,7 +148,7 @@ const INITIAL_SCENARIOS: ScenarioDetail[] = [
     tampered_state: 'weights.bin SHA256: ffff0a... (Fine-tuned neural network checkpoint)',
     parameter_diff: 'Core neural network weights modified. Invariant: Modifying weights destroys all behavioral guarantees.',
     detection_mechanism: 'CHECK 7 (Honesty Rule): System enforces that weight mutation invalidates all claims (C1, C2, C3, C4).',
-    business_impact: 'Forces mandatory full re-audit (0% saved, 4 of 4 suites). Prevents silent model drift in production.',
+    defense_and_mitigation: 'Forces mandatory full re-audit (0% saved, 4 of 4 suites). Prevents silent model drift in production.',
     what_happened: 'Weights modified. All behavioral claims invalidated. Full re-audit required (0% saved).'
   },
   {
@@ -164,7 +164,7 @@ const INITIAL_SCENARIOS: ScenarioDetail[] = [
     tampered_state: 'adapter.bin mounted in runtime directory (adapter SHA256: 9c8b...)',
     parameter_diff: 'Adapter added to clinical pipeline. Policy mandates immediate rejection on any claim impact.',
     detection_mechanism: 'CHECK 7 (Strict Policy Evaluator) observes impacted claims M1, M2, M3 and enforces on_impacted=deny rule.',
-    business_impact: 'Zero-tolerance safety gate blocks unverified medical AI model execution immediately.',
+    defense_and_mitigation: 'Zero-tolerance safety gate blocks unverified medical AI model execution immediately.',
     what_happened: 'Adapter changed. Clinical policy has on_impacted=deny; request denied immediately.'
   },
   {
@@ -180,7 +180,7 @@ const INITIAL_SCENARIOS: ScenarioDetail[] = [
     tampered_state: 'Auditor committed signed revocation leaf to Merkle Transparency Log at index #5',
     parameter_diff: 'Certificate status: REVOKED in immutable log (Reason: "Safety non-compliance detected")',
     detection_mechanism: 'CHECK 6 (Transparency Log Query) checks the latest Merkle checkpoint. Discovers revocation record and rejects certificate.',
-    business_impact: 'Instant revocation propagation: No relying party can accept inferences from a decommissioned certificate.',
+    defense_and_mitigation: 'Instant revocation propagation: No relying party can accept inferences from a decommissioned certificate.',
     what_happened: 'Auditor revoked certificate. Check 6 caught revocation in transparency log.'
   },
   {
@@ -196,7 +196,7 @@ const INITIAL_SCENARIOS: ScenarioDetail[] = [
     tampered_state: 'Inference evaluated on 2026-10-21 (4+ months expired)',
     parameter_diff: 'System evaluation timestamp > expires_at timestamp.',
     detection_mechanism: 'CHECK 7 (Policy Validity Check) flags stale certification window even though underlying crypto keys remain valid.',
-    business_impact: 'Flags decision as NEEDS_REVIEW, alerting compliance and blocking automated high-risk transactions.',
+    defense_and_mitigation: 'Flags decision as NEEDS_REVIEW, alerting compliance and blocking automated high-risk transactions.',
     what_happened: 'cert-003 expired at demo_now. Cryptography valid, but policy triggers review.'
   },
   {
@@ -212,7 +212,7 @@ const INITIAL_SCENARIOS: ScenarioDetail[] = [
     tampered_state: 'Identical receipt re-submitted with previously spent nonce (consumed = 1 in database ledger)',
     parameter_diff: 'Nonce nonce-7a89... was already marked used in database verifications ledger.',
     detection_mechanism: 'CHECK 3 (Anti-Replay Nonce Check) queries the challenge registry. Flags nonce as previously consumed & terminates verification.',
-    business_impact: 'Prevents duplicate transaction execution and financial replay theft.',
+    defense_and_mitigation: 'Prevents duplicate transaction execution and financial replay theft.',
     what_happened: 'Re-submitted previously verified receipt. Verifier flagged consumed nonce / replay.'
   },
   {
@@ -228,7 +228,7 @@ const INITIAL_SCENARIOS: ScenarioDetail[] = [
     tampered_state: 'Receipt was signed by external attacker keypair: foreign_privkey != quote.receipt_pubkey.',
     parameter_diff: 'Digital signature verification fails against public key published in the platform quote.',
     detection_mechanism: 'CHECK 1 (Receipt Signature Check) and CHECK 2 (Platform Quote Binding) fail Ed25519 verification mathematically.',
-    business_impact: 'Defeats MITM relays, API spoofing, and key substitution attacks.',
+    defense_and_mitigation: 'Defeats MITM relays, API spoofing, and key substitution attacks.',
     what_happened: 'Receipt signed by key not bound to enclave quote. Check 1 signature check failed.'
   },
   {
@@ -244,7 +244,7 @@ const INITIAL_SCENARIOS: ScenarioDetail[] = [
     tampered_state: 'Inference receipt submitted with quote: null (un-attested bare metal).',
     parameter_diff: 'Platform quote completely missing from verification payload.',
     detection_mechanism: 'CHECK 2 (Quote Check) detects missing hardware quote. Verifier downgrades verdict to UNVERIFIED.',
-    business_impact: 'Strict regulatory policies reject UNVERIFIED outputs, preventing un-monitored AI from executing enterprise actions.',
+    defense_and_mitigation: 'Strict regulatory policies reject UNVERIFIED outputs, preventing un-monitored AI from executing enterprise actions.',
     what_happened: 'Hardware quote omitted. Verifier marked verdict UNVERIFIED.'
   },
   {
@@ -260,7 +260,7 @@ const INITIAL_SCENARIOS: ScenarioDetail[] = [
     tampered_state: 'Attacker executes direct SQL UPDATE on leaf #3, modifying audit payload.',
     parameter_diff: 'Calculated Merkle root from modified leaves (0x89fa...) does not match signed checkpoint root (0x2390...).',
     detection_mechanism: 'CHECK 5 (Merkle Inclusion Proof) fails. System runs /log/integrity, pinpoints exact corrupted leaf index (#3), and repairs from backup.',
-    business_impact: 'Database administrators cannot rewrite history. Cryptographic immutability guarantees tamper evidence.',
+    defense_and_mitigation: 'Database administrators cannot rewrite history. Cryptographic immutability guarantees tamper evidence.',
     what_happened: 'Log leaf tampered. Merkle inclusion proof failed; integrity checker located bad index.'
   },
   {
@@ -276,7 +276,7 @@ const INITIAL_SCENARIOS: ScenarioDetail[] = [
     tampered_state: 'Public signal modified: root_signal changed to bogus hash ("1234567890...").',
     parameter_diff: 'Pairing equation e(A, B) != e(alpha, beta) * e(x, gamma). Circuit constraint evaluation fails.',
     detection_mechanism: 'CHECK 8 (Groth16 ZK Verifier) evaluates bilinear pairings on BN128 curve in under 2ms; mathematically rejects altered root.',
-    business_impact: 'Guarantees privacy-preserving verification while maintaining zero-tolerance against forged mathematical claims.',
+    defense_and_mitigation: 'Guarantees privacy-preserving verification while maintaining zero-tolerance against forged mathematical claims.',
     what_happened: 'Groth16 membership proof verified; proof against altered root rejected.'
   }
 ];
@@ -608,7 +608,7 @@ export const Attacks: React.FC = () => {
               <div className="space-y-3 text-xs leading-relaxed text-slate-700">
                 <div className="bg-white p-3 rounded-lg border border-emerald-200 space-y-1.5">
                   <span className="font-bold text-emerald-900 block text-xs">Compliance Consequence:</span>
-                  <p>{selectedScenario.business_impact}</p>
+                  <p>{selectedScenario.defense_and_mitigation}</p>
                 </div>
 
                 <div className="bg-emerald-100/60 p-3 rounded-lg border border-emerald-300">

@@ -47,7 +47,6 @@ export const Header: React.FC<HeaderProps> = ({ activeTab, setActiveTab, onReset
     { id: 'verify', label: 'Verify', icon: CheckCircle },
     { id: 'attacks', label: 'Attacks', icon: AlertTriangle },
     { id: 'metrics', label: 'Metrics', icon: BarChart3 },
-    { id: 'business', label: 'Business', icon: TrendingUp },
     { id: 'pitch', label: 'Pitch Deck', icon: Presentation },
   ];
 
