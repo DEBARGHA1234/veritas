@@ -149,33 +149,48 @@ def seed_database() -> Dict[str, Any]:
     with open(SEED_FILE, "r", encoding="utf-8") as f:
         seed_data = json.load(f)
 
-    # 1. Register Models & Passports
+    now = datetime.now(timezone.utc)
+
+    # 1. Register Models & Passports with real timestamps
     registered_passports = {}
-    for m in seed_data["models"]:
+    for i, m in enumerate(seed_data["models"]):
+        passport_ts = (now - timedelta(minutes=45 - i * 5)).isoformat()
         passport = register_passport(
             model_id=m["model_id"],
             dir_name=m["dir"],
             version=m["version"],
-            operator_id=m["operator_id"]
+            operator_id=m["operator_id"],
+            created_at=passport_ts
         )
         registered_passports[m["model_id"]] = passport
 
-    # 2. Issue Certificates
+    # 2. Issue Certificates with real relative timestamps
     issued_certificates = {}
     for c in seed_data["certificates"]:
-        # Lookup passport digest for the model
         model_dir = c["model_dir"]
         passport = registered_passports.get(model_dir)
         if not passport:
             raise ValueError(f"Passport for model {model_dir} not registered")
+
+        # Determine real dynamic issued_at and expires_at
+        if c["cert_id"] == "cert-003":
+            # Intentionally expired certificate for Scenario S6
+            issued_at = (now - timedelta(days=180)).isoformat()
+            expires_at = (now - timedelta(days=30)).isoformat()
+        elif c["cert_id"] == "cert-002":
+            issued_at = (now - timedelta(days=7)).isoformat()
+            expires_at = (now + timedelta(days=173)).isoformat()
+        else: # cert-001
+            issued_at = (now - timedelta(days=14)).isoformat()
+            expires_at = (now + timedelta(days=166)).isoformat()
 
         cert = issue_certificate(
             cert_id=c["cert_id"],
             auditor_id=c["auditor_id"],
             model_id=model_dir,
             passport_digest=passport["passport_digest"],
-            issued_at=c["issued_at"],
-            expires_at=c["expires_at"],
+            issued_at=issued_at,
+            expires_at=expires_at,
             claims=c["claims"]
         )
         issued_certificates[c["cert_id"]] = cert

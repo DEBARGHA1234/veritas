@@ -46,7 +46,7 @@ def compute_claim_statuses(
     certified_passport: Dict[str, Any],
     current_passport: Dict[str, Any],
     is_revoked: bool = False,
-    now_iso: str = DEMO_NOW
+    now_iso: Optional[str] = None
 ) -> Dict[str, Any]:
     """
     Evaluates claim status against the current passport.
@@ -56,6 +56,7 @@ def compute_claim_statuses(
     - EXPIRED: overlay if now_iso > expires_at
     - REVOKED: overlay if certificate is revoked
     """
+    eval_now = now_iso or datetime.now(timezone.utc).isoformat()
     cert_artifacts = certified_passport.get("artifacts", {})
     curr_artifacts = current_passport.get("artifacts", {})
 
@@ -71,7 +72,7 @@ def compute_claim_statuses(
     # Check expiration
     expires_at = certificate.get("expires_at", "")
     is_expired = False
-    if expires_at and now_iso > expires_at:
+    if expires_at and eval_now > expires_at:
         is_expired = True
 
     claims = certificate.get("claims", [])

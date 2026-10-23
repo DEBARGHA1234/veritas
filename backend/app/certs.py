@@ -6,7 +6,7 @@ Soundness rule: behavioral claims MUST depend on 'weights'.
 """
 
 import json
-from datetime import datetime, timezone
+from datetime import datetime, timezone, timedelta
 from typing import Any, Dict, List, Optional
 from fastapi import HTTPException
 
@@ -41,23 +41,28 @@ def issue_certificate(
     auditor_id: str,
     model_id: str,
     passport_digest: str,
-    issued_at: str,
-    expires_at: str,
-    claims: List[Dict[str, Any]]
+    issued_at: Optional[str] = None,
+    expires_at: Optional[str] = None,
+    claims: Optional[List[Dict[str, Any]]] = None
 ) -> Dict[str, Any]:
     """
     Validates claims, signs certificate with auditor key, stores, and logs to Merkle tree.
     """
-    validate_soundness_rules(claims)
+    claims_list = claims or []
+    validate_soundness_rules(claims_list)
+
+    now_utc = datetime.now(timezone.utc)
+    actual_issued_at = issued_at or now_utc.isoformat()
+    actual_expires_at = expires_at or (now_utc + timedelta(days=180)).isoformat()
 
     unsigned_cert = {
         "cert_id": cert_id,
         "auditor_id": auditor_id,
         "model_id": model_id,
         "passport_digest": passport_digest,
-        "issued_at": issued_at,
-        "expires_at": expires_at,
-        "claims": claims
+        "issued_at": actual_issued_at,
+        "expires_at": actual_expires_at,
+        "claims": claims_list
     }
 
     # Auditor signs canonical unsigned certificate
@@ -127,15 +132,26 @@ def is_certificate_revoked(cert_id: str) -> bool:
         return row is not None
 
 
+_CERT_CACHE: Dict[str, Dict[str, Any]] = {}
+
+
 def get_certificate_by_id(cert_id: str) -> Optional[Dict[str, Any]]:
+    if cert_id in _CERT_CACHE:
+        return _CERT_CACHE[cert_id]
     with get_db_connection() as conn:
         row = conn.execute("SELECT raw_json FROM certificates WHERE cert_id = ?", (cert_id,)).fetchone()
         if row:
-            return json.loads(row["raw_json"])
+            data = json.loads(row["raw_json"])
+            _CERT_CACHE[cert_id] = data
+            return data
     return None
 
 
 def get_all_certificates() -> List[Dict[str, Any]]:
     with get_db_connection() as conn:
         rows = conn.execute("SELECT raw_json FROM certificates ORDER BY issued_at DESC").fetchall()
-        return [json.loads(r["raw_json"]) for r in rows]
+        certs = [json.loads(r["raw_json"]) for r in rows]
+        for c in certs:
+            if "cert_id" in c:
+                _CERT_CACHE[c["cert_id"]] = c
+        return certs

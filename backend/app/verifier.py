@@ -42,9 +42,10 @@ def verify_receipt(
     quote: Optional[Dict[str, Any]] = None,
     policy_id: str = "regulated-lending",
     zk_proof_data: Optional[Dict[str, Any]] = None,
-    now_iso: str = DEMO_NOW
+    now_iso: Optional[str] = None
 ) -> Dict[str, Any]:
     start_time = time.perf_counter()
+    eval_now = now_iso or datetime.now(timezone.utc).isoformat()
     policy = get_policy(policy_id)
 
     checks: List[Dict[str, Any]] = []
@@ -384,7 +385,7 @@ def verify_receipt(
             certified_passport=certified_passport,
             current_passport=passport,
             is_revoked=is_certificate_revoked(cert_id),
-            now_iso=now_iso
+            now_iso=eval_now
         )
         revalidation_plan = claim_eval["revalidation_plan"]
         statuses = claim_eval["claim_statuses"]

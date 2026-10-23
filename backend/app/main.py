@@ -6,6 +6,7 @@ Exposes all endpoints specified in Section 6 of VERITAS architecture.
 """
 
 from contextlib import asynccontextmanager
+from datetime import datetime, timezone
 from typing import Any, Dict, List, Optional
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
@@ -76,7 +77,7 @@ def read_root():
         "service": "VERITAS",
         "attestation_banner": ATTESTATION_BANNER,
         "attestation_mode": ATTESTATION_MODE,
-        "demo_now": DEMO_NOW,
+        "server_time": datetime.now(timezone.utc).isoformat(),
         "status": "operational"
     }
 
@@ -192,6 +193,14 @@ def tamper_log():
 @app.post("/log/repair")
 def repair_log():
     return TransparencyLog.repair()
+
+
+@app.post("/log/append-test")
+def append_test_log_entry(payload: Optional[Dict[str, Any]] = None):
+    label = payload.get("label") if payload else None
+    if not label:
+        label = f"Live Operational Verification Event at {datetime.now(timezone.utc).strftime('%H:%M:%S UTC')}"
+    return TransparencyLog.append_test_event(label=label)
 
 
 # -------------------------------------------------------------
@@ -320,6 +329,16 @@ def run_benchmark_suite_endpoint(runs: int = 200):
     from .seed import seed_verifications
     seed_verifications(count=runs)
     return get_live_metrics()
+
+
+@app.post("/benchmark/measure-latency")
+def measure_actual_latency_endpoint(runs: int = 100, policy: str = "regulated-lending"):
+    from .benchmark_runner import run_actual_latency_benchmark
+    try:
+        res = run_actual_latency_benchmark(runs=runs, policy_id=policy)
+        return res
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
 
 
 @app.post("/demo/reset")

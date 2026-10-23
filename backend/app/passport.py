@@ -77,7 +77,7 @@ def register_passport(
     artifacts = scan_model_dir(target_path)
     passport_digest = compute_passport_digest(artifacts)
 
-    now_iso = created_at or DEMO_NOW
+    now_iso = created_at or datetime.now(timezone.utc).isoformat()
 
     # Sign passport digest with operator's Ed25519 key
     priv_key, pub_hex = get_demo_keypair(operator_id)
@@ -121,12 +121,19 @@ def register_passport(
     return passport_data
 
 
+_PASSPORT_CACHE: Dict[str, Dict[str, Any]] = {}
+
+
 def get_passport_by_digest(passport_digest: str) -> Optional[Dict[str, Any]]:
+    if passport_digest in _PASSPORT_CACHE:
+        return _PASSPORT_CACHE[passport_digest]
     with get_db_connection() as conn:
         row = conn.execute("SELECT raw_json FROM passports WHERE passport_digest = ?", (passport_digest,)).fetchone()
         if row:
             import json
-            return json.loads(row["raw_json"])
+            data = json.loads(row["raw_json"])
+            _PASSPORT_CACHE[passport_digest] = data
+            return data
     return None
 
 
@@ -134,4 +141,8 @@ def get_all_passports() -> list:
     with get_db_connection() as conn:
         rows = conn.execute("SELECT raw_json FROM passports ORDER BY created_at DESC").fetchall()
         import json
-        return [json.loads(r["raw_json"]) for r in rows]
+        passports = [json.loads(r["raw_json"]) for r in rows]
+        for p in passports:
+            if "passport_digest" in p:
+                _PASSPORT_CACHE[p["passport_digest"]] = p
+        return passports

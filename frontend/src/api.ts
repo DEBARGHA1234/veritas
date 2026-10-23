@@ -58,6 +58,7 @@ export const api = {
   checkIntegrity: () => request("/log/integrity"),
   tamperLog: () => request("/log/tamper", { method: "POST" }),
   repairLog: () => request("/log/repair", { method: "POST" }),
+  appendTestLog: (label?: string) => request("/log/append-test", { method: "POST", body: JSON.stringify({ label }) }),
 
   // Runtime
   startRuntime: (modelDir: string, nonce?: string) =>
@@ -106,5 +107,7 @@ export const api = {
   // Metrics & Demo Reset
   getMetrics: () => request("/metrics"),
   runBenchmark: (runs: number = 200) => request(`/benchmark/run-suite?runs=${runs}`, { method: "POST" }),
+  measureLatency: (runs: number = 100, policy: string = "regulated-lending") =>
+    request(`/benchmark/measure-latency?runs=${runs}&policy=${policy}`, { method: "POST" }),
   resetDemo: () => request("/demo/reset", { method: "POST" })
 };

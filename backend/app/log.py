@@ -153,6 +153,26 @@ class TransparencyLog:
         return new_index
 
     @staticmethod
+    def append_test_event(label: str = "Live Operational Event") -> Dict[str, Any]:
+        """Appends a live operational audit event to the transparency log in real time."""
+        now_ts = datetime.now(timezone.utc).isoformat()
+        payload = {
+            "event": label,
+            "recorded_at": now_ts,
+            "authority": "VERITAS-Log-Authority-01",
+            "proof_type": "RFC6962-MTH"
+        }
+        idx = TransparencyLog.append_entry("AUDIT_EVENT", payload)
+        cp = TransparencyLog.get_latest_checkpoint()
+        return {
+            "status": "appended",
+            "leaf_index": idx,
+            "created_at": now_ts,
+            "entry_type": "AUDIT_EVENT",
+            "checkpoint": cp
+        }
+
+    @staticmethod
     def get_leaves() -> List[Dict[str, Any]]:
         with get_db_connection() as conn:
             rows = conn.execute("SELECT * FROM log_leaves ORDER BY leaf_index ASC").fetchall()
