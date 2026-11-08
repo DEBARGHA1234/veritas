@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { Analytics } from '@vercel/analytics/react';
 import { Header } from './components/Header';
 import { Overview } from './pages/Overview';
 import { Passports } from './pages/Passports';
@@ -57,6 +58,7 @@ export const App: React.FC = () => {
           <span className="font-mono text-amber-600 font-semibold">Attestation: SIMULATED (no hardware TEE)</span>
         </div>
       </footer>
+      <Analytics />
     </div>
   );
 };
